@@ -35,7 +35,7 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" href="/contact">
+              <Link className="nav-link" href="/my-blog">
                 Blog
               </Link>
             </li>
