@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 function Contact() {
   return (
     <div>
-         <div className="mainContainer">
+      <div className="mainContainer">
         <div class="mainContainer">
           <img src="/bannerlog.jpg" className="w-100" alt="Snow" />
           <div class="centered">
@@ -32,7 +32,7 @@ function Contact() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Contact
+export default Contact;

@@ -1,14 +1,5 @@
 import axios from "axios";
-import API from "../../utils/endpoint";
-import { STATUS_CODE_200 } from "../../utils/magicNumberFile";
-import {
-  HOME_TEMPLATE,
-  MIGRATE_COUNTRY_TEMPLATE,
-} from "../../utils/templateConstants";
-import parseHtml from "../helpers/parseHtml";
-import exclusions from "../../utils/exclusions";
-
-const API_BASE_URL = `${API.baseUrl}${API.contentBaseUrl}`;
+const API_BASE_URL = "http://122.176.75.250:4548/content/get.json";
 
 /**
  * Get the content endpoint based on the resolved URL and the specified endpoint.
@@ -32,28 +23,28 @@ const getContentEndpoint = (resolvedUrl, endpoint, query) => {
  * @param {object} options - The additional data options.
  * @returns {Promise<object>} A Promise that resolves to the additional data.
  */
-const getAdditionalData = async ({ data }, { category = "", date = "" }) => {
-  if (![HOME_TEMPLATE, MIGRATE_COUNTRY_TEMPLATE].includes(data.template)) {
-    return { newsData: [], blogsData: [], JobsData: [] };
-  }
+// const getAdditionalData = async ({ data }, { category = "", date = "" }) => {
+//   if (![HOME_TEMPLATE, MIGRATE_COUNTRY_TEMPLATE].includes(data.template)) {
+//     return { newsData: [], blogsData: [], JobsData: [] };
+//   }
 
-  try {
-    const query = `category=${category}&date=${date}&skip=0`;
-    const [newsRes, blogRes, jobRes] = await Promise.all([
-      axios.get(`${API.baseUrl}${API.newsPageUrl}/?${query}&limit=1`),
-      axios.get(`${API.baseUrl}${API.blogPageUrl}/?${query}&limit=2`),
-      axios.get(`${API.baseUrl}${API.jobsPageUrl}/?${query}&limit=3`),
-    ]);
+//   try {
+//     const query = `category=${category}&date=${date}&skip=0`;
+//     const [newsRes, blogRes, jobRes] = await Promise.all([
+//       axios.get(`${API.baseUrl}${API.newsPageUrl}/?${query}&limit=1`),
+//       axios.get(`${API.baseUrl}${API.blogPageUrl}/?${query}&limit=2`),
+//       axios.get(`${API.baseUrl}${API.jobsPageUrl}/?${query}&limit=3`),
+//     ]);
 
-    return {
-      JobsData: jobRes.data.data,
-      newsData: newsRes.data.data,
-      blogsData: blogRes.data.data,
-    };
-  } catch (error) {
-    return { newsData: [], blogsData: [], JobsData: [] };
-  }
-};
+//     return {
+//       JobsData: jobRes.data.data,
+//       newsData: newsRes.data.data,
+//       blogsData: blogRes.data.data,
+//     };
+//   } catch (error) {
+//     return { newsData: [], blogsData: [], JobsData: [] };
+//   }
+// };
 
 /**
  * Return a redirect response for page not found.
@@ -70,11 +61,6 @@ const pageNotFound = () => ({ notFound: true });
  */
 const withPageContent = (options, getServerSideProps) => async (context) => {
   const { resolvedUrl, req, res, query } = context;
-
-  // Check if the resolved URL contains any of the forbidden patterns
-  if (exclusions.some((pattern) => resolvedUrl.includes(pattern))) {
-    return pageNotFound();
-  }
 
   const isAmp = query.amp === "1"; // Check if the page is AMP (query.amp will be '1' for AMP pages)
 
@@ -95,26 +81,51 @@ const withPageContent = (options, getServerSideProps) => async (context) => {
   if (isUpperCase()) return pageNotFound();
 
   // Header, Footer content with page content
-  const [response, globalResponse] = await Promise.all([
-    axios.get(`${API_BASE_URL}${ENDPOINT}`),
-    axios.get(`${API_BASE_URL}/global`),
-  ]);
-  // Error handler if content fetch fails
-  if (
-    globalResponse.data.code !== Number(STATUS_CODE_200) ||
-    response.data.code !== Number(STATUS_CODE_200)
-  ) {
-    return pageNotFound();
-  }
-  // /home shoud redirect to 404 page
-  if (ENDPOINT === "/home/") {
-    return pageNotFound();
+  //   let response = {
+  //     code: 200,
+  //     data: {
+  //       type: "home_page",
+  //       site_info: {
+  //         site_logo: null,
+  //         site_name: "Drupal POC",
+  //         site_slogan: "",
+  //         menu_component: {
+  //           menu_name: "main",
+  //           menu_list: {
+  //             Home: "/",
+  //           },
+  //         },
+  //       },
+  //       uuid: "05ef353e-67d0-42b8-ab9e-43303df369ff",
+  //       title: "Home Page",
+  //     },
+  //     msg: "Success",
+  //   };
+
+  const postData = { alias: ENDPOINT };
+
+  const dataOptions = {
+    method: "post",
+    url: `${API_BASE_URL}`, // Assuming this is your API endpoint
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data: postData, // Stringify the post data
+  };
+
+  try {
+    var response = await axios(dataOptions);
+    console.log("<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>", response); // Handle response data here
+  } catch (error) {
+    console.error("Error:", error);
   }
 
-  //blog issue resolved
-  if (response.data.data.type === "blog" && !resolvedUrl.includes("/blog/")) {
+  //   axios.get(`${API_BASE_URL}/global`),
+  //   Error handler if content fetch fails
+  if (response.data.code !== 200) {
     return pageNotFound();
   }
+  //   /home shoud redirect to 404 page
 
   // Additional API data on specific pages
   let additionalData =
@@ -131,22 +142,14 @@ const withPageContent = (options, getServerSideProps) => async (context) => {
     return pageNotFound();
   }
 
-  const plainHtml = parseHtml(
-    `<div>${response?.data?.data?.field_content_component}</div>`
-  );
-  const modifiedContent = {
-    ...response.data.data,
-    field_content_component: plainHtml,
-  };
-
   return {
     props: {
       isMobile,
       ...pageProps,
       ...additionalData,
-      content: modifiedContent,
-      seoData: pageProps?.seoData || {},
-      globalPageContent: globalResponse.data.data,
+      content: response?.data?.data || {},
+      //   seoData: pageProps?.seoData || {},
+      //   globalPageContent: globalResponse.data.data,
     },
   };
 };
