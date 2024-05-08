@@ -1,12 +1,18 @@
 import Link from "next/link";
 import React from "react";
 
-function Header() {
+function Header({ content }) {
+  console.log(content, "content");
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light headerBg">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
-          Navbar
+          <div className="logoStyle">
+            <img
+              src={content?.field_image_field?.file_url}
+              alt={content?.field_image_field?.image_alt}
+            />
+          </div>
         </a>
         <button
           className="navbar-toggler"
@@ -19,26 +25,27 @@ function Header() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div
           className="collapse navbar-collapse justify-content-end"
           id="navbarNav"
         >
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" href="/">
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" href="/about">
-                About
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" href="/my-blog">
-                Blog
-              </Link>
-            </li>
+            {content?.field_menu?.map((item, index) => {
+              return (
+                <>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link active"
+                      aria-current="page"
+                      href={item?.title_component?.field_title}
+                    >
+                      {item?.title_component?.field_title}
+                    </Link>
+                  </li>
+                </>
+              );
+            })}
           </ul>
         </div>
       </div>

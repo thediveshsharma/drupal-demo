@@ -2,17 +2,16 @@ import React from "react";
 
 function About() {
   return (
-    <>
-      <div className="mainContainer">
-        <div class="mainContainer">
-          {/* <img src="/bannerlog.jpg" className="w-100" alt="Snow" /> */}
-          <div class="centered">
-            <h1 className="heading">About me</h1>
-            <p className="para">Introduction and bio</p>
-          </div>
+    <div className="mainContentBox">
+      <div class="mainContainer">
+        <img src="/bannerlog.jpg" className="w-100" alt="Snow" />
+        <div class="centered">
+          <h1 className="heading">About me</h1>
+          <p className="para">Introduction and bio</p>
         </div>
       </div>
-      <div className="card mt-3 p-3">
+
+      <div className="card mt-3 p-3 m-3">
         <div class="card-body">
           <p class="card-text">
             My name is Tomasz Nieżurawski but I often use a shorter version of
@@ -31,7 +30,7 @@ function About() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -1,12 +1,13 @@
 import React from "react";
 
-function Footer() {
+function Footer({ content }) {
+  console.log(content, "hey");
   return (
     <div className="footer bg-light d-flex align-items-center justify-content-between">
       <div className="d-flex justify-content-around">
-        <span>Privacy Policy</span>
+        <span>{content?.field_footer_text}</span>
       </div>
-      <p className="m-0">© 2023 Demo, All rights reserved</p>
+      <p className="m-0">{content?.field_footer_text_2}</p>
     </div>
   );
 }

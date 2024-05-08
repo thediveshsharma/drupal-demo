@@ -112,17 +112,35 @@ const withPageContent = (options, getServerSideProps) => async (context) => {
     },
     data: postData, // Stringify the post data
   };
+  const postDataGlobal = { alias: "/global" };
+
+  const globalDataOptions = {
+    method: "post",
+    url: `${API_BASE_URL}`, // Assuming this is your API endpoint
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data: postDataGlobal, // Stringify the post data
+  };
 
   try {
-    var response = await axios(dataOptions);
-    console.log("<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>", response); // Handle response data here
+    var [response, globalResponse] = await Promise.all([
+      axios(dataOptions),
+      axios(globalDataOptions),
+    ]);
+    // console.log(
+    //   "<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>",
+    //   globalResponse.data.code,
+    //   response
+    // ); // Handle response data here
   } catch (error) {
     console.error("Error:", error);
   }
 
   //   axios.get(`${API_BASE_URL}/global`),
   //   Error handler if content fetch fails
-  if (response.data.code !== 200) {
+
+  if (response.data.code !== 200 || globalResponse.data.code !== 200) {
     return pageNotFound();
   }
   //   /home shoud redirect to 404 page
@@ -149,7 +167,7 @@ const withPageContent = (options, getServerSideProps) => async (context) => {
       ...additionalData,
       content: response?.data?.data || {},
       //   seoData: pageProps?.seoData || {},
-      //   globalPageContent: globalResponse.data.data,
+      globalPageContent: globalResponse.data.data,
     },
   };
 };

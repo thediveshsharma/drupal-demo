@@ -13,7 +13,7 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <Fragment>
       {/* <ErrorBoundary> */}
-      <Layout {...pageProps}>
+      <Layout pageProps={pageProps}>
         <Component {...pageProps} />
       </Layout>
       {/* </ErrorBoundary> */}

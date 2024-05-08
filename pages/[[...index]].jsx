@@ -5,8 +5,8 @@ import axios from "axios";
 
 export const getServerSideProps = withPageContent({ additional: true });
 
-export default function Template({ content }) {
-  console.log(content, "content");
+export default function Template({ content, globalPageContent }) {
+  
   const { Component, isError, templateName } = useTemplate(content);
 
   if (isError) {
@@ -15,7 +15,7 @@ export default function Template({ content }) {
 
   return (
     <Fragment>
-      <Component />
+      <Component content={content} globalPageContent={globalPageContent} />
     </Fragment>
   );
 }
