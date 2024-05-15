@@ -9,7 +9,7 @@ function Header({ content }) {
         <a className="navbar-brand" href="#">
           <div className="logoStyle">
             <img
-              src={content?.field_image_field?.file_url}
+              src={`http://122.176.75.250:4548${content?.field_image_field?.file_url}`}
               alt={content?.field_image_field?.image_alt}
             />
           </div>

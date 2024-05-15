@@ -7,7 +7,7 @@ function HomePage({ content }) {
     <div className="mainContentBox">
       <div class="mainContainer">
         <img
-          src={`http://122.176.75.250:4548/${homePageData[0]?.component?.content?.field_image_field.file_url}`}
+          src={`http://122.176.75.250:4548${homePageData[0]?.component?.content?.field_image_field.file_url}`}
           className="w-100"
           alt="Snow"
         />

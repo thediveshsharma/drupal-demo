@@ -1,9 +1,14 @@
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
-import { BLOG_TEMPLATE, HOME_TEMPLATE } from "../utils/templateConstants";
+import {
+  BLOG_TEMPLATE,
+  HOME_TEMPLATE,
+  BLOG_LISTING_TEMPLATE,
+} from "../utils/templateConstants";
 
 const HomeTemplate = dynamic(() => import("../component/homepage"));
 const BlogTemplate = dynamic(() => import("../component/blog"));
+const BlogListingTemplate = dynamic(() => import("../pages/bloglisting"));
 
 const returnTemplate = (template) => {
   console.log(template, "templateName");
@@ -12,6 +17,8 @@ const returnTemplate = (template) => {
       return HomeTemplate;
     case BLOG_TEMPLATE:
       return BlogTemplate;
+    // case BLOG_LISTING_TEMPLATE:
+    //   return BlogListingTemplate;
     default:
       return HomeTemplate;
   }

@@ -1,7 +1,7 @@
 import React from "react";
 
 function Footer({ content }) {
-  console.log(content, "hey");
+ 
   return (
     <div className="footer bg-light d-flex align-items-center justify-content-between">
       <div className="d-flex justify-content-around">
